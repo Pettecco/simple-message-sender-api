@@ -13,7 +13,6 @@ export class MessageService {
       from: 'Joana',
       to: 'João',
       isRead: false,
-      date: new Date(),
     },
   ];
 

@@ -35,6 +35,7 @@ export class MessageController {
   @HttpCode(HttpStatus.OK)
   @Get()
   findAll(@Query() pagination: any) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { limit = 10, offset = 0 } = pagination;
     // return `Retorna todos os recados. Limit=${limit}, Offset=${offset}.`;
     return this.messageService.findAll();

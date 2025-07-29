@@ -26,3 +26,33 @@ Content-Type: application/json
 }
 ### Apaga um recado
 DELETE {{baseUrl}}/message/3/
+
+
+# Users
+### Lista todas os users
+GET {{baseUrl}}/users/
+?limit=10
+&offset=0
+### Lista apenas uma pessoa
+GET {{baseUrl}}/users/10/
+### Cria uma pessoa
+POST {{baseUrl}}/users/
+Content-Type: application/json
+
+{
+    "email": "email1@email.com",
+    "password": "123456",
+    "name": "Petteco"
+}
+### Apaga um usuário
+DELETE {{baseUrl}}/users/3/
+
+### Atualiza um usuário
+
+PATCH {{baseUrl}}/users/10/
+Content-Type: application/json
+
+{
+    "password": "12345A",
+    "name": "Camis"
+}

@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MessageModule } from './message/message.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       synchronize: true, // Sincroniza com o DB. Não deve ser usado em produção!
     }),
     MessageModule,
+    UsersModule,
   ],
   controllers: [],
   providers: [],

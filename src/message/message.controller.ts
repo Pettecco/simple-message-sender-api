@@ -52,7 +52,10 @@ export class MessageController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateMessageDto: UpdateMessageDTO) {
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateMessageDto: UpdateMessageDTO,
+  ) {
     return this.messageService.update(id, updateMessageDto);
   }
 

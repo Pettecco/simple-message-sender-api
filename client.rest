@@ -12,17 +12,17 @@ POST {{baseUrl}}/message/
 Content-Type: application/json
 
 {
-    "content": "4 NOVO Recado",
+    "content": "NOVO Recado",
     "from": "Joana",
     "to": "João"
 }
 ### Atualiza um recado
-PATCH {{baseUrl}}/message/2/
+PATCH {{baseUrl}}/message/4/
 Content-Type: application/json
 
 {
-    "content": "Recado",
+    "content": "Atualizando recado",
     "isRead": true
 }
 ### Apaga um recado
-DELETE {{baseUrl}}/message/2/
+DELETE {{baseUrl}}/message/3/

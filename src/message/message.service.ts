@@ -4,12 +4,14 @@ import { CreateMessageDTO } from './dto/create-message.dto';
 import { UpdateMessageDTO } from './dto/update-message.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class MessageService {
   constructor(
     @InjectRepository(Message)
     private readonly messageRepository: Repository<Message>,
+    private readonly usersService: UsersService,
   ) {}
 
   throwNotFoundError() {
@@ -17,11 +19,39 @@ export class MessageService {
   }
 
   findAll() {
-    return this.messageRepository.find();
+    return this.messageRepository.find({
+      relations: ['from', 'to'],
+      order: {
+        id: 'DESC',
+      },
+      select: {
+        from: {
+          id: true,
+          name: true,
+        },
+        to: {
+          id: true,
+          name: true,
+        },
+      },
+    });
   }
 
   async findOne(id: number) {
-    const message = await this.messageRepository.findOneBy({ id });
+    const message = await this.messageRepository.findOne({
+      where: { id },
+      relations: ['from', 'to'],
+      select: {
+        from: {
+          id: true,
+          name: true,
+        },
+        to: {
+          id: true,
+          name: true,
+        },
+      },
+    });
 
     if (message) return message;
 
@@ -29,15 +59,33 @@ export class MessageService {
   }
 
   async create(createMessageDto: CreateMessageDTO) {
+    const { fromId, toId, content } = createMessageDto;
+
+    const fromUser = await this.usersService.findOne(fromId);
+    const toUser = await this.usersService.findOne(toId);
+
     const newMessage = {
-      ...createMessageDto,
+      content,
+      from: fromUser,
+      to: toUser,
       isRead: false,
       date: new Date(),
     };
 
-    const message = await this.messageRepository.create(newMessage);
+    const message = this.messageRepository.create(newMessage);
+    this.messageRepository.save(message);
 
-    return this.messageRepository.save(message);
+    return {
+      ...message,
+      from: {
+        id: message.from.id,
+        name: message.from.name,
+      },
+      to: {
+        id: message.to.id,
+        name: message.to.name,
+      },
+    };
   }
 
   async update(id: number, updateMessageDto: UpdateMessageDTO) {

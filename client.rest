@@ -6,15 +6,15 @@ GET {{baseUrl}}/message/
 ?limit=10
 &offset=0
 ### Lista apenas um recado
-GET {{baseUrl}}/message/2/
+GET {{baseUrl}}/message/13/
 ### Cria um recado
 POST {{baseUrl}}/message/
 Content-Type: application/json
 
 {
-    "content": "NOVO Recado",
-    "from": "Joana",
-    "to": "João"
+    "content": "Olá, tudo bem?",
+    "fromId": 12,
+    "toId": 10
 }
 ### Atualiza um recado
 PATCH {{baseUrl}}/message/4/
@@ -40,7 +40,7 @@ POST {{baseUrl}}/users/
 Content-Type: application/json
 
 {
-    "email": "email1@email.com",
+    "email": "email12@email.com",
     "password": "123456",
     "name": "Petteco"
 }

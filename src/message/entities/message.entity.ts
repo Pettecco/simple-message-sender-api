@@ -1,7 +1,10 @@
+import { User } from 'src/users/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -13,12 +16,6 @@ export class Message {
   @Column({ type: 'varchar', length: '255' })
   content: string;
 
-  @Column({ type: 'varchar', length: 50 })
-  from: string;
-
-  @Column({ type: 'varchar', length: 50 })
-  to: string;
-
   @Column({ default: false })
   isRead: boolean;
 
@@ -27,4 +24,13 @@ export class Message {
 
   @UpdateDateColumn()
   updatedAt?: Date;
+
+  // Muitos recados podem ser enviados a uma única pessoa
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'from' })
+  from: User;
+
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'to' })
+  to: User;
 }

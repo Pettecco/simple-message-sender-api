@@ -26,11 +26,11 @@ export class Message {
   updatedAt?: Date;
 
   // Muitos recados podem ser enviados a uma única pessoa
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
   @JoinColumn({ name: 'from' })
   from: User;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
   @JoinColumn({ name: 'to' })
   to: User;
 }

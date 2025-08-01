@@ -45,7 +45,7 @@ Content-Type: application/json
     "name": "Petteco"
 }
 ### Apaga um usuário
-DELETE {{baseUrl}}/users/3/
+DELETE {{baseUrl}}/users/10/
 
 ### Atualiza um usuário
 

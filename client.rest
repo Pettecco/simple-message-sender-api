@@ -6,7 +6,7 @@ GET {{baseUrl}}/message/
 ?limit=10
 &offset=0
 ### Lista apenas um recado
-GET {{baseUrl}}/message/13/
+GET {{baseUrl}}/message/15/
 ### Cria um recado
 POST {{baseUrl}}/message/
 Content-Type: application/json
@@ -14,15 +14,15 @@ Content-Type: application/json
 {
     "content": "Olá, tudo bem?",
     "fromId": 12,
-    "toId": 10
+    "toId": 15
 }
 ### Atualiza um recado
-PATCH {{baseUrl}}/message/4/
+PATCH {{baseUrl}}/message/15/
 Content-Type: application/json
 
 {
     "content": "Atualizando recado",
-    "isRead": true
+    "isRead": false
 }
 ### Apaga um recado
 DELETE {{baseUrl}}/message/3/
@@ -40,9 +40,9 @@ POST {{baseUrl}}/users/
 Content-Type: application/json
 
 {
-    "email": "email12@email.com",
+    "email": "email1@email.com",
     "password": "123456",
-    "name": "Petteco"
+    "name": "Camis"
 }
 ### Apaga um usuário
 DELETE {{baseUrl}}/users/10/

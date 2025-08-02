@@ -14,6 +14,7 @@ import {
 import { MessageService } from './message.service';
 import { CreateMessageDTO } from './dto/create-message.dto';
 import { UpdateMessageDTO } from './dto/update-message.dto';
+import { PaginationDTO } from 'src/common/dto/pagination.dto';
 
 // CRUD
 // Create -> POST -> Criar um recado
@@ -34,11 +35,8 @@ export class MessageController {
 
   @HttpCode(HttpStatus.OK)
   @Get()
-  findAll(@Query() pagination: any) {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { limit = 10, offset = 0 } = pagination;
-    // return `Retorna todos os recados. Limit=${limit}, Offset=${offset}.`;
-    return this.messageService.findAll();
+  findAll(@Query() pagination: PaginationDTO) {
+    return this.messageService.findAll(pagination);
   }
 
   @Get(':id')

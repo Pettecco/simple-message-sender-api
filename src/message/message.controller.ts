@@ -9,11 +9,13 @@ import {
   Patch,
   Post,
   Query,
+  UseInterceptors,
 } from '@nestjs/common';
 import { MessageService } from './message.service';
 import { CreateMessageDTO } from './dto/create-message.dto';
 import { UpdateMessageDTO } from './dto/update-message.dto';
 import { PaginationDTO } from 'src/common/dto/pagination.dto';
+import { AddHeaderInterceptor } from 'src/common/interceptors/add-header.interceptor';
 
 // CRUD
 // Create -> POST -> Criar um recado
@@ -34,13 +36,13 @@ export class MessageController {
 
   @HttpCode(HttpStatus.OK)
   @Get()
+  @UseInterceptors(new AddHeaderInterceptor())
   findAll(@Query() pagination: PaginationDTO) {
     return this.messageService.findAll(pagination);
   }
 
   @Get(':id')
   findOne(@Param('id') id: number) {
-    console.log(id, typeof id);
     return this.messageService.findOne(id);
   }
 

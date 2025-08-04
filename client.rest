@@ -25,7 +25,7 @@ Content-Type: application/json
     "isRead": false
 }
 ### Apaga um recado
-DELETE {{baseUrl}}/message/3/
+DELETE {{baseUrl}}/message/12/
 
 
 # Users

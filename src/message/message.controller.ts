@@ -15,7 +15,7 @@ import { MessageService } from './message.service';
 import { CreateMessageDTO } from './dto/create-message.dto';
 import { UpdateMessageDTO } from './dto/update-message.dto';
 import { PaginationDTO } from 'src/common/dto/pagination.dto';
-import { AddHeaderInterceptor } from 'src/common/interceptors/add-header.interceptor';
+import { TimingConnectionInterceptor } from 'src/common/interceptors/timing-connection.interceptor';
 
 // CRUD
 // Create -> POST -> Criar um recado
@@ -36,7 +36,7 @@ export class MessageController {
 
   @HttpCode(HttpStatus.OK)
   @Get()
-  @UseInterceptors(new AddHeaderInterceptor())
+  @UseInterceptors(new TimingConnectionInterceptor())
   findAll(@Query() pagination: PaginationDTO) {
     return this.messageService.findAll(pagination);
   }

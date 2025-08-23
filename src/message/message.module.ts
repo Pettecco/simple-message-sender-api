@@ -12,7 +12,8 @@ import { MessageUtils } from './message.utils';
   providers: [
     MessageService,
     {
-      provide: MessageUtils,
+      provide: MessageUtils, // Token
+      // useValue: new MessageUtilsMock(), // Valor a ser usado
       useClass: MessageUtils,
     },
   ],

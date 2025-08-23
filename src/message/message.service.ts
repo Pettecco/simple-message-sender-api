@@ -6,6 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UsersService } from 'src/users/users.service';
 import { PaginationDTO } from 'src/common/dto/pagination.dto';
+import { MessageUtils } from './message.utils';
 
 @Injectable()
 export class MessageService {
@@ -13,6 +14,7 @@ export class MessageService {
     @InjectRepository(Message)
     private readonly messageRepository: Repository<Message>,
     private readonly usersService: UsersService,
+    private readonly messageUtils: MessageUtils,
   ) {}
 
   throwNotFoundError() {
@@ -21,6 +23,8 @@ export class MessageService {
 
   findAll(pagination: PaginationDTO) {
     const { limit = 10, offset } = pagination;
+
+    console.log(this.messageUtils.revertString('Petterson'));
 
     return this.messageRepository.find({
       take: limit, // quantos registros serão exibidos por página

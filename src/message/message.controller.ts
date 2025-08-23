@@ -14,6 +14,7 @@ import { MessageService } from './message.service';
 import { CreateMessageDTO } from './dto/create-message.dto';
 import { UpdateMessageDTO } from './dto/update-message.dto';
 import { PaginationDTO } from 'src/common/dto/pagination.dto';
+import { MessageUtils } from './message.utils';
 
 // CRUD
 // Create -> POST -> Criar um recado
@@ -29,11 +30,15 @@ import { PaginationDTO } from 'src/common/dto/pagination.dto';
 // DTO -> Objeto simples -> Validar dados / Transformar dados
 @Controller('message')
 export class MessageController {
-  constructor(private readonly messageService: MessageService) {}
+  constructor(
+    private readonly messageService: MessageService,
+    private readonly messageUtils: MessageUtils,
+  ) {}
 
   @HttpCode(HttpStatus.OK)
   @Get()
   findAll(@Query() pagination: PaginationDTO) {
+    console.log(this.messageUtils.revertString('Petterson'));
     return this.messageService.findAll(pagination);
   }
 

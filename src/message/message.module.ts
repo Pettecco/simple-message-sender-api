@@ -5,6 +5,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Message } from './entities/message.entity';
 import { UsersModule } from 'src/users/users.module';
 import { MessageUtils } from './message.utils';
+import { RemoveSpacesRegex } from 'src/common/regex/remove-spaces.regex';
+import { OnlyLowerCaseLettersRegex } from 'src/common/regex/only-lowercase-letters.regex';
+import {
+  ONLY_LOWERCASE_LETTERS_REGEX,
+  REMOVE_SPACES_REGEX,
+} from './message.contants';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Message]), forwardRef(() => UsersModule)],
@@ -21,6 +27,14 @@ import { MessageUtils } from './message.utils';
     {
       provide: MessageUtils,
       useClass: MessageUtils,
+    },
+    {
+      provide: ONLY_LOWERCASE_LETTERS_REGEX,
+      useClass: OnlyLowerCaseLettersRegex,
+    },
+    {
+      provide: REMOVE_SPACES_REGEX,
+      useClass: RemoveSpacesRegex,
     },
   ],
 })

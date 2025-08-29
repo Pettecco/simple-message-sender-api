@@ -9,11 +9,15 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { MessageService } from './message.service';
 import { CreateMessageDTO } from './dto/create-message.dto';
 import { UpdateMessageDTO } from './dto/update-message.dto';
 import { PaginationDTO } from 'src/common/dto/pagination.dto';
+import { AuthTokenGuard } from 'src/auth/guards/auth-token.guard';
+import { TokenPayloadParam } from 'src/auth/params/token-payload.params';
+import { TokenPayloadDto } from 'src/auth/dto/token-payload.dto';
 
 // CRUD
 // Create -> POST -> Criar um recado
@@ -42,18 +46,31 @@ export class MessageController {
     return this.messageService.findOne(id);
   }
 
+  @UseGuards(AuthTokenGuard)
   @Post()
-  create(@Body() createMessageDto: CreateMessageDTO) {
-    return this.messageService.create(createMessageDto);
+  create(
+    @Body() createMessageDto: CreateMessageDTO,
+    @TokenPayloadParam() tokenPayload: TokenPayloadDto,
+  ) {
+    return this.messageService.create(createMessageDto, tokenPayload);
   }
 
+  @UseGuards(AuthTokenGuard)
   @Patch(':id')
-  update(@Param('id') id: number, @Body() updateMessageDto: UpdateMessageDTO) {
-    return this.messageService.update(id, updateMessageDto);
+  update(
+    @Param('id') id: number,
+    @Body() updateMessageDto: UpdateMessageDTO,
+    @TokenPayloadParam() tokenPayload: TokenPayloadDto,
+  ) {
+    return this.messageService.update(id, updateMessageDto, tokenPayload);
   }
 
+  @UseGuards(AuthTokenGuard)
   @Delete(':id')
-  remove(@Param('id') id: number) {
-    return this.messageService.remove(id);
+  remove(
+    @Param('id') id: number,
+    @TokenPayloadParam() tokenPayload: TokenPayloadDto,
+  ) {
+    return this.messageService.remove(id, tokenPayload);
   }
 }

@@ -14,8 +14,5 @@ export class CreateMessageDTO {
   readonly content: string;
 
   @IsPositive()
-  fromId: number;
-
-  @IsPositive()
   toId: number;
 }

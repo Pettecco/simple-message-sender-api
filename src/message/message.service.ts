@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Message } from './entities/message.entity';
 import { CreateMessageDTO } from './dto/create-message.dto';
 import { UpdateMessageDTO } from './dto/update-message.dto';
@@ -6,6 +10,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UsersService } from 'src/users/users.service';
 import { PaginationDTO } from 'src/common/dto/pagination.dto';
+import { TokenPayloadDto } from 'src/auth/dto/token-payload.dto';
 
 @Injectable()
 export class MessageService {
@@ -63,10 +68,13 @@ export class MessageService {
     this.throwNotFoundError();
   }
 
-  async create(createMessageDto: CreateMessageDTO) {
-    const { fromId, toId, content } = createMessageDto;
+  async create(
+    createMessageDto: CreateMessageDTO,
+    tokenPayload: TokenPayloadDto,
+  ) {
+    const { toId, content } = createMessageDto;
 
-    const fromUser = await this.usersService.findOne(fromId);
+    const fromUser = await this.usersService.findOne(tokenPayload.sub);
     const toUser = await this.usersService.findOne(toId);
 
     const newMessage = {
@@ -93,24 +101,30 @@ export class MessageService {
     };
   }
 
-  async update(id: number, updateMessageDto: UpdateMessageDTO) {
-    const partialUpdatedMessageDTO = {
-      isRead: updateMessageDto?.isRead,
-      content: updateMessageDto?.content,
-    };
+  async update(
+    id: number,
+    updateMessageDto: UpdateMessageDTO,
+    tokenPayload: TokenPayloadDto,
+  ) {
+    const message = await this.messageRepository.findOneBy({ id });
 
-    const message = await this.messageRepository.preload({
-      id,
-      ...partialUpdatedMessageDTO,
-    });
+    if (message.from.id !== tokenPayload.sub) {
+      throw new ForbiddenException('Esse recadi não é seu');
+    }
 
-    if (!message) return this.throwNotFoundError();
+    message.content = updateMessageDto?.content ?? message.content;
+    message.isRead = updateMessageDto?.isRead ?? message.isRead;
 
-    return this.messageRepository.save(message);
+    this.messageRepository.save(message);
+    return message;
   }
 
-  async remove(id: number) {
+  async remove(id: number, tokenPayload: TokenPayloadDto) {
     const message = await this.messageRepository.findOneBy({ id });
+
+    if (message.from.id !== tokenPayload.sub) {
+      throw new ForbiddenException('Esse recado não é seu');
+    }
 
     if (!message) {
       return this.throwNotFoundError();

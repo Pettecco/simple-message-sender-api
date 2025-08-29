@@ -1,4 +1,5 @@
 @baseUrl = http://localhost:3000
+@authToken = {{authenticate.response.body.accessToken}}
 
 # RECADOS
 ### Lista todos os recados
@@ -30,11 +31,8 @@ DELETE {{baseUrl}}/message/12/
 
 # Users
 ### Lista todas os users
-GET {{baseUrl}}/users/
-?limit=10
-&offset=0
-### Lista apenas uma pessoa
-GET {{baseUrl}}/users/10/
+GET {{baseUrl}}/users/?limit=10&offset=0
+Authorization: Bearer {{authToken}}
 ### Cria uma pessoa
 POST {{baseUrl}}/users/
 Content-Type: application/json
@@ -55,4 +53,16 @@ Content-Type: application/json
 {
     "password": "12345A",
     "name": "Camis"
+}
+
+
+#AUTH
+### Loga com um usuário
+# @name authenticate
+POST {{baseUrl}}/auth
+Content-Type: application/json
+
+{
+  "email": "email2@email.com",
+  "password": "12345A"
 }

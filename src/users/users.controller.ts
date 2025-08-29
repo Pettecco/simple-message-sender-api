@@ -7,11 +7,16 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  UseGuards,
+  Req,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { AuthTokenGuard } from 'src/auth/guards/auth-token.guard';
+import { REQUEST_TOKEN_PAYLOAD_KEY } from 'src/auth/auth.constants';
 
+@UseGuards(AuthTokenGuard)
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -22,7 +27,8 @@ export class UsersController {
   }
 
   @Get()
-  findAll() {
+  findAll(@Req() req: Request) {
+    console.log(req[REQUEST_TOKEN_PAYLOAD_KEY].sub);
     return this.usersService.findAll();
   }
 

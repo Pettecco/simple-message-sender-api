@@ -33,7 +33,13 @@ DELETE {{baseUrl}}/message/12/
 ### Lista todas os users
 GET {{baseUrl}}/users/?limit=10&offset=0
 Authorization: Bearer {{authToken}}
-### Cria uma pessoa
+
+### Lista apenas um usuário
+GET {{baseUrl}}/users/12/
+Authorization: Bearer {{authToken}}
+
+
+### Cria um usuário
 POST {{baseUrl}}/users/
 Content-Type: application/json
 
@@ -42,11 +48,11 @@ Content-Type: application/json
     "password": "123456",
     "name": "Camis"
 }
+
 ### Apaga um usuário
 DELETE {{baseUrl}}/users/10/
 
 ### Atualiza um usuário
-
 PATCH {{baseUrl}}/users/17/
 Content-Type: application/json
 
@@ -56,7 +62,7 @@ Content-Type: application/json
 }
 
 
-#AUTH
+# Autenticação
 ### Loga com um usuário
 # @name authenticate
 POST {{baseUrl}}/auth

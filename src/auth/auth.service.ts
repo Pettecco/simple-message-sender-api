@@ -7,6 +7,7 @@ import { HashingService } from './hashing/hashing.service';
 import { ConfigType } from '@nestjs/config';
 import jwtConfig from './config/jwt.config';
 import { JwtService } from '@nestjs/jwt';
+import { RefreshTokenDto } from './dto/refresh-token.dto';
 
 @Injectable()
 export class AuthService {
@@ -37,19 +38,36 @@ export class AuthService {
       throw new UnauthorizedException('Senha inválida');
     }
 
-    const accessToken = await this.jwtService.signAsync(
+    const accessToken = await this.signJwtAsync<Partial<User>>(
+      user.id,
+      this.jwtConfiguration.jwtTtl,
+      { email: user.email },
+    );
+
+    const refreshToken = await this.signJwtAsync(
+      user.id,
+      this.jwtConfiguration.jwtRefreshTtl,
+    );
+
+    return { accessToken, refreshToken };
+  }
+
+  private async signJwtAsync<T>(sub: number, expiresIn: number, payload?: T) {
+    return await this.jwtService.signAsync(
       {
-        sub: user.id,
-        email: user.email,
+        sub,
+        ...payload,
       },
       {
         audience: this.jwtConfiguration.audience,
         issuer: this.jwtConfiguration.issuer,
         secret: this.jwtConfiguration.secret,
-        expiresIn: this.jwtConfiguration.jwtTtl,
+        expiresIn,
       },
     );
+  }
 
-    return { accessToken };
+  refreshTokens(refreshTokenDto: RefreshTokenDto) {
+    return true;
   }
 }

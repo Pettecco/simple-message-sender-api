@@ -1,13 +1,13 @@
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { LoginDto } from './dto/login.dto';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from 'src/users/entities/user.entity';
+import { InjectRepository } from '@nestjs/typeorm';
 import { HashingService } from './hashing/hashing.service';
-import { ConfigType } from '@nestjs/config';
 import jwtConfig from './config/jwt.config';
+import { ConfigType } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -26,7 +26,7 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new UnauthorizedException('Esse usuário não existe');
+      throw new UnauthorizedException('Usuário não encontrado');
     }
 
     const isPasswordValid = await this.hashingService.compare(
@@ -35,21 +35,33 @@ export class AuthService {
     );
 
     if (!isPasswordValid) {
-      throw new UnauthorizedException('Senha inválida');
+      throw new UnauthorizedException('Senha inválida!');
     }
 
-    const accessToken = await this.signJwtAsync<Partial<User>>(
+    return this.createTokens(user);
+  }
+
+  private async createTokens(user: User) {
+    const accessTokenPromise = this.signJwtAsync<Partial<User>>(
       user.id,
       this.jwtConfiguration.jwtTtl,
       { email: user.email },
     );
 
-    const refreshToken = await this.signJwtAsync(
+    const refreshTokenPromise = this.signJwtAsync(
       user.id,
       this.jwtConfiguration.jwtRefreshTtl,
     );
 
-    return { accessToken, refreshToken };
+    const [accessToken, refreshToken] = await Promise.all([
+      accessTokenPromise,
+      refreshTokenPromise,
+    ]);
+
+    return {
+      accessToken,
+      refreshToken,
+    };
   }
 
   private async signJwtAsync<T>(sub: number, expiresIn: number, payload?: T) {
@@ -67,7 +79,24 @@ export class AuthService {
     );
   }
 
-  refreshTokens(refreshTokenDto: RefreshTokenDto) {
-    return true;
+  async refreshTokens(refreshTokenDto: RefreshTokenDto) {
+    try {
+      const { sub } = await this.jwtService.verifyAsync(
+        refreshTokenDto.refreshToken,
+        this.jwtConfiguration,
+      );
+
+      const user = await this.userRepository.findOneBy({
+        id: sub,
+      });
+
+      if (!user) {
+        throw new Error('Usuário não encontrado');
+      }
+
+      return this.createTokens(user);
+    } catch (error) {
+      throw new UnauthorizedException(error.message);
+    }
   }
 }

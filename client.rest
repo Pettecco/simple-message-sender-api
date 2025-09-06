@@ -42,6 +42,7 @@ Authorization: Bearer {{authToken}}
 
 ### Cria um usuário
 POST {{baseUrl}}/users/
+Authorization: Bearer {{authToken}}
 Content-Type: application/json
 
 {
@@ -52,9 +53,11 @@ Content-Type: application/json
 
 ### Apaga um usuário
 DELETE {{baseUrl}}/users/10/
+Authorization: Bearer {{authToken}}
 
 ### Atualiza um usuário
 PATCH {{baseUrl}}/users/17/
+Authorization: Bearer {{authToken}}
 Content-Type: application/json
 
 {
@@ -70,8 +73,8 @@ POST {{baseUrl}}/auth/
 Content-Type: application/json
 
 {
-    "email": "luiz@email.com",
-    "password": "123456"
+    "email": "email2@email.com",
+    "password": "12345A"
 }
 ### Re-Autenticação
 # @name reAuthenticate

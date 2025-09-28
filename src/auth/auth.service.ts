@@ -23,10 +23,11 @@ export class AuthService {
   async login(loginDto: LoginDto) {
     const user = await this.userRepository.findOneBy({
       email: loginDto.email,
+      active: true,
     });
 
     if (!user) {
-      throw new UnauthorizedException('Usuário não encontrado');
+      throw new UnauthorizedException('Usuário não autorizado');
     }
 
     const isPasswordValid = await this.hashingService.compare(
@@ -88,10 +89,11 @@ export class AuthService {
 
       const user = await this.userRepository.findOneBy({
         id: sub,
+        active: true,
       });
 
       if (!user) {
-        throw new Error('Usuário não encontrado');
+        throw new Error('Usuário não autorizado');
       }
 
       return this.createTokens(user);

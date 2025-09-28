@@ -12,10 +12,10 @@ GET {{baseUrl}}/message/2/
 ### Cria um recado
 POST {{baseUrl}}/message/
 Content-Type: application/json
+Authorization: Bearer {{authToken}}
 
 {
     "content": "Olá, tudo bem?",
-    "fromId": 12,
     "toId": 15
 }
 ### Atualiza um recado

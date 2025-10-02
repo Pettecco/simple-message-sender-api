@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   ForbiddenException,
   Injectable,
@@ -11,6 +12,8 @@ import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { HashingService } from 'src/auth/hashing/hashing.service';
 import { TokenPayloadDto } from 'src/auth/dto/token-payload.dto';
+import * as path from 'path';
+import * as fs from 'fs/promises';
 
 @Injectable()
 export class UsersService {
@@ -100,5 +103,32 @@ export class UsersService {
     }
 
     return this.userRespository.remove(user);
+  }
+
+  async uploadPicture(
+    file: Express.Multer.File,
+    tokenPayload: TokenPayloadDto,
+  ) {
+    if (file.size < 1024) {
+      throw new BadRequestException('File too small');
+    }
+
+    const user = await this.findOne(tokenPayload.sub);
+    const fileExtension = path
+      .extname(file.originalname)
+      .toLowerCase()
+      .substring(1);
+
+    const fileName = `${tokenPayload.sub}.${fileExtension}`;
+
+    const fileFullPath = path.resolve(process.cwd(), 'pictures', fileName);
+
+    await fs.writeFile(fileFullPath, file.buffer);
+
+    user.picture = fileName;
+
+    await this.userRespository.save(user);
+
+    return user;
   }
 }
